@@ -56,9 +56,11 @@ const fileHandler = (username) => {
 }
 const fileHandlerLog = (newData) => {
     try{
-        const readFile = fs.readFileSync('error-front-bot-log.json');
+        const readFile = fs.readFileSync(__dirname + '/error-front-bot-log.json');
         let data = JSON.parse(readFile ?? []);
+        console.log({data})
         const replaceData = JSON.parse(newData);
+        console.log({newData})
         data =[ ...data, replaceData];
         writeFileDataUser(JSON.stringify(data));    
         return true;
@@ -129,6 +131,7 @@ bot.action('closeBot', ctx => {
 app.use(cors());
 app.get('/api/bot/error/',(req,res) => {
     const { query } = req;
+    console.log({query})
     if(Object.keys(query).length){
     const users = fileHandler();
     for(let key in users){
@@ -137,6 +140,10 @@ app.get('/api/bot/error/',(req,res) => {
     fileHandlerLog(JSON.stringify(query))
     }
 });
+
+app.get('/', (req,res)=>{
+    res.status(200).send('start server')
+})
 
 bot.launch();
 app.listen(PORT, ()=> console.log('SERVER start on port and bot work', PORT));
